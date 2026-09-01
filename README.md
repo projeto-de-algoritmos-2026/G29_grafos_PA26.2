@@ -10,6 +10,9 @@
 
 ## Sobre
 
+Contexto completo do problema, do algoritmo e do plano de trabalho em
+[docs/CONTEXTO.md](docs/CONTEXTO.md).
+
 ### Apresentação do trabalho: [assistir ao vídeo]()
 
 ### Desenvolvedores
@@ -42,6 +45,8 @@
 ### Decisões técnicas
 
 ## Como executar
+
+Passo a passo em [docs/COMO_EXECUTAR.md](docs/COMO_EXECUTAR.md).
 
 ### Pré-requisitos
 

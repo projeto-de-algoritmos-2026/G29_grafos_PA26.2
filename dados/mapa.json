@@ -1,0 +1,18 @@
+{
+  "observacao": "Mapa inicial de exemplo para validar o formato dos dados. Sera expandido para o predio ficticio completo (15 a 25 locais, 25 a 40 conexoes) em um commit posterior.",
+  "locais": {
+    "S101": { "nome": "Sala 101", "tipo": "sala" },
+    "CA": { "nome": "Corredor A", "tipo": "corredor" },
+    "EN": { "nome": "Escada Norte", "tipo": "escada" },
+    "H1": { "nome": "Hall do Terreo", "tipo": "area_comum" },
+    "P1": { "nome": "Porta Principal", "tipo": "acesso" },
+    "SP": { "nome": "Saida Principal", "tipo": "saida" }
+  },
+  "conexoes": [
+    { "origem": "S101", "destino": "CA", "distancia": 12, "tempo": 0.3, "dificuldade": 1, "bloqueado": false },
+    { "origem": "CA", "destino": "EN", "distancia": 15, "tempo": 0.4, "dificuldade": 2, "bloqueado": false },
+    { "origem": "EN", "destino": "H1", "distancia": 30, "tempo": 0.8, "dificuldade": 3, "bloqueado": false },
+    { "origem": "H1", "destino": "P1", "distancia": 12, "tempo": 0.3, "dificuldade": 1, "bloqueado": false },
+    { "origem": "P1", "destino": "SP", "distancia": 5, "tempo": 0.1, "dificuldade": 1, "bloqueado": false }
+  ]
+}
