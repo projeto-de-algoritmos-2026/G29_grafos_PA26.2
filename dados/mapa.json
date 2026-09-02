@@ -1,18 +1,43 @@
 {
-  "observacao": "Mapa inicial de exemplo para validar o formato dos dados. Sera expandido para o predio ficticio completo (15 a 25 locais, 25 a 40 conexoes) em um commit posterior.",
   "locais": {
     "S101": { "nome": "Sala 101", "tipo": "sala" },
+    "S102": { "nome": "Sala 102", "tipo": "sala" },
+    "S103": { "nome": "Sala 103", "tipo": "sala" },
+    "S201": { "nome": "Sala 201", "tipo": "sala" },
+    "S202": { "nome": "Sala 202", "tipo": "sala" },
+    "S203": { "nome": "Sala 203", "tipo": "sala" },
     "CA": { "nome": "Corredor A", "tipo": "corredor" },
+    "CB": { "nome": "Corredor B", "tipo": "corredor" },
+    "CC": { "nome": "Corredor Central", "tipo": "corredor" },
     "EN": { "nome": "Escada Norte", "tipo": "escada" },
-    "H1": { "nome": "Hall do Terreo", "tipo": "area_comum" },
+    "ES": { "nome": "Escada Sul", "tipo": "escada" },
+    "EL": { "nome": "Elevador", "tipo": "elevador" },
+    "H1": { "nome": "Térreo", "tipo": "area_comum" },
     "P1": { "nome": "Porta Principal", "tipo": "acesso" },
-    "SP": { "nome": "Saida Principal", "tipo": "saida" }
+    "P2": { "nome": "Porta Lateral", "tipo": "acesso" },
+    "SP": { "nome": "Saída Principal", "tipo": "saida" },
+    "SE": { "nome": "Saída de Emergência", "tipo": "saida" }
   },
   "conexoes": [
-    { "origem": "S101", "destino": "CA", "distancia": 12, "tempo": 0.3, "dificuldade": 1, "bloqueado": false },
-    { "origem": "CA", "destino": "EN", "distancia": 15, "tempo": 0.4, "dificuldade": 2, "bloqueado": false },
-    { "origem": "EN", "destino": "H1", "distancia": 30, "tempo": 0.8, "dificuldade": 3, "bloqueado": false },
-    { "origem": "H1", "destino": "P1", "distancia": 12, "tempo": 0.3, "dificuldade": 1, "bloqueado": false },
-    { "origem": "P1", "destino": "SP", "distancia": 5, "tempo": 0.1, "dificuldade": 1, "bloqueado": false }
+    { "origem": "S101", "destino": "CA", "distancia": 8, "tempo": 10, "dificuldade": 1, "bloqueado": false },
+    { "origem": "S102", "destino": "CA", "distancia": 10, "tempo": 12, "dificuldade": 1, "bloqueado": false },
+    { "origem": "S103", "destino": "CB", "distancia": 8, "tempo": 10, "dificuldade": 1, "bloqueado": false },
+    { "origem": "S201", "destino": "CB", "distancia": 8, "tempo": 10, "dificuldade": 1, "bloqueado": false },
+    { "origem": "S202", "destino": "CB", "distancia": 10, "tempo": 12, "dificuldade": 1, "bloqueado": false },
+    { "origem": "S203", "destino": "CA", "distancia": 12, "tempo": 15, "dificuldade": 1, "bloqueado": false },
+    { "origem": "CA", "destino": "CC", "distancia": 20, "tempo": 25, "dificuldade": 1, "bloqueado": false },
+    { "origem": "CB", "destino": "CC", "distancia": 18, "tempo": 20, "dificuldade": 1, "bloqueado": false },
+    { "origem": "CA", "destino": "CB", "distancia": 25, "tempo": 30, "dificuldade": 1, "bloqueado": false },
+    { "origem": "CA", "destino": "EN", "distancia": 15, "tempo": 20, "dificuldade": 3, "bloqueado": false },
+    { "origem": "CB", "destino": "ES", "distancia": 15, "tempo": 20, "dificuldade": 2, "bloqueado": false },
+    { "origem": "CC", "destino": "EL", "distancia": 10, "tempo": 10, "dificuldade": 1, "bloqueado": false },
+    { "origem": "EN", "destino": "H1", "distancia": 25, "tempo": 35, "dificuldade": 4, "bloqueado": false },
+    { "origem": "ES", "destino": "H1", "distancia": 28, "tempo": 45, "dificuldade": 2, "bloqueado": false },
+    { "origem": "EL", "destino": "H1", "distancia": 25, "tempo": 15, "dificuldade": 5, "bloqueado": false },
+    { "origem": "EN", "destino": "ES", "distancia": 35, "tempo": 55, "dificuldade": 3, "bloqueado": false },
+    { "origem": "H1", "destino": "P1", "distancia": 12, "tempo": 15, "dificuldade": 1, "bloqueado": false },
+    { "origem": "H1", "destino": "P2", "distancia": 18, "tempo": 20, "dificuldade": 1, "bloqueado": false },
+    { "origem": "P1", "destino": "SP", "distancia": 5, "tempo": 6, "dificuldade": 1, "bloqueado": false },
+    { "origem": "P2", "destino": "SE", "distancia": 5, "tempo": 6, "dificuldade": 1, "bloqueado": false }
   ]
 }
