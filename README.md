@@ -11,7 +11,7 @@
 ## Sobre
 
 Contexto completo do problema, do algoritmo e do plano de trabalho em
-[docs/CONTEXTO.md](docs/CONTEXTO.md).
+[docs/CONTEXTO.md](docs/contexto.md).
 
 ### Apresentação do trabalho: [assistir ao vídeo]()
 
@@ -46,7 +46,7 @@ Contexto completo do problema, do algoritmo e do plano de trabalho em
 
 ## Como executar
 
-Passo a passo em [docs/COMO_EXECUTAR.md](docs/COMO_EXECUTAR.md).
+Passo a passo em [docs/COMO_EXECUTAR.md](docs/como_executar.md).
 
 ### Pré-requisitos
 
