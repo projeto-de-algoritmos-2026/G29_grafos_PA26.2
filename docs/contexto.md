@@ -16,10 +16,10 @@ local onde a pessoa está e uma saída segura?**
 Construir uma aplicação que encontre a melhor rota de saída em um prédio
 fictício, recalculando o caminho quando houver bloqueios. O sistema recebe:
 
-- a localização inicial;
-- a saída desejada (ou a opção de encontrar a saída mais rápida);
+- o local de origem;
+- a saída desejada;
 - os bloqueios ativos no momento;
-- o critério de rota escolhido.
+- o critério de rota (menor tempo, menor distância, menor dificuldade).
 
 E devolve: a rota detalhada, o tempo estimado, a distância total, a
 dificuldade e uma mensagem clara quando não houver passagem segura.
