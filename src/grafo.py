@@ -1,26 +1,6 @@
-"""
-grafo.py
-
-Representa o predio como um grafo nao direcionado usando lista de
-adjacencia: para cada local, guarda apenas as conexoes existentes.
-
-Cada conexao mantem: destino, distancia, tempo, dificuldade e estado de
-bloqueio. Um bloqueio nao remove a conexao do grafo, apenas a marca como
-indisponivel -- o Dijkstra deve ignora-la ao calcular rotas.
-
-Responsabilidade: Pessoa 1 (algoritmos e dados).
-"""
-
-import json
-
-
 class Grafo:
-    """Grafo nao direcionado do predio, representado por lista de adjacencia."""
-
     def __init__(self):
-        # TODO: estrutura de adjacencia, por exemplo:
-        # {"S101": [{"destino": "CA", "distancia": 12, "tempo": 0.3,
-        #            "dificuldade": 1, "bloqueado": False}, ...], ...}
+        self.locais = {}
         self.adjacencia = {}
 
     def carregar_de_json(self, caminho_arquivo):
@@ -30,14 +10,35 @@ class Grafo:
         raise NotImplementedError
 
     def adicionar_local(self, codigo, nome, tipo):
-        """Adiciona um novo local (vertice) ao grafo."""
-        # TODO
-        raise NotImplementedError
+        self.locais[codigo] = {
+            "nome": nome,
+            "tipo": tipo,
+        }
+        self.adjacencia.setdefault(codigo, [])
 
     def adicionar_conexao(self, origem, destino, distancia, tempo, dificuldade):
-        """Cria uma conexao (aresta) nos dois sentidos entre dois locais."""
-        # TODO: ao adicionar, criar as duas direcoes automaticamente.
-        raise NotImplementedError
+        if origem not in self.locais or destino not in self.locais:
+            raise ValueError("Os dois locais devem existir no grafo.")
+
+        self.adjacencia[origem].append(
+            {
+                "destino": destino,
+                "distancia": distancia,
+                "tempo": tempo,
+                "dificuldade": dificuldade,
+                "bloqueado": False,
+            }
+        )
+
+        self.adjacencia[destino].append(
+            {
+                "destino": origem,
+                "distancia": distancia,
+                "tempo": tempo,
+                "dificuldade": dificuldade,
+                "bloqueado": False,
+            }
+        )
 
     def bloquear_conexao(self, origem, destino):
         """Marca uma conexao como indisponivel, sem remove-la do grafo."""
