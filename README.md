@@ -1,53 +1,95 @@
 # Sistema de Evacuação de Emergência com Dijkstra
 
-## Sumário
+## Alunos
 
-- [Funcionalidades](#funcionalidades)
-- [Implementação](#implementação)
-- [Como executar](#como-executar)
-- [Como usar](#como-usar)
-- [Desenvolvedores](#desenvolvedores)
+| Matrícula | Aluno |
+| -- | -- |
+| 211041105 | Bruna de Lima Santos |
+| 212005453 | Pedro Luciano de Azevedo |
 
 ## Sobre
 
-Contexto completo do problema, do algoritmo e do plano de trabalho em
-[docs/CONTEXTO.md](docs/contexto.md).
+Trabalho 1 para a disciplina de Projeto de Algoritmos do 2º semestre de 2026. O sistema
+calcula rotas de evacuação de emergência em um prédio representado como um grafo
+ponderado.
 
-### Apresentação do trabalho: [assistir ao vídeo]()
+### Problema
 
-### Desenvolvedores
+Em uma emergência, o caminho mais próximo pode estar bloqueado ou não ser o
+mais adequado. O sistema deve encontrar uma rota disponível entre a localização
+de origem e uma saída do prédio.
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/libruna">
-          <img src="https://avatars.githubusercontent.com/u/83987201?v=4" width="100px;" alt="Bruna Lima"/><br>
-          <sub><b>Bruna Lima</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/PedroALuciano">
-          <img src="https://avatars.githubusercontent.com/u/108702746?v=4" width="100px;" alt="Pedro Luciano"/><br>
-          <sub><b>Pedro Luciano</b></sub>
-        </a>
-      </td>
-    </tr>
-  </table>
-</div>
+### Solução
 
-## Funcionalidades
+O usuário informa a origem, a saída, o critério de busca e os locais
+indisponíveis (bloqueios no caminho). O sistema apresenta a rota encontrada ou
+informa quando não existe um caminho possível.
 
-## Implementação
+### Algoritmo
 
-### Estrutura do repositório
+O menor caminho é calculado com o **algoritmo de Dijkstra** e uma fila de
+prioridade **heap**. A busca ignora conexões bloqueadas e pode priorizar:
 
-### Decisões técnicas
+- **Tempo:** medido em segundos;
+- **Distância:** medida em metros;
+- **Dificuldade:** representada por uma escala de 1 a 5.
 
-## Como executar
+### Mapa
 
-Passo a passo em [docs/COMO_EXECUTAR.md](docs/como_executar.md).
+O [mapa](./dados/mapa.json) possui 17 locais e 20 conexões bidirecionais. Os locais são os vértices
+do grafo, enquanto as passagens são as arestas com os pesos utilizados pelo
+algoritmo.
 
-### Pré-requisitos
+### Complexidade
 
-## Como usar
+## Screenshots
+
+## Apresentação do trabalho: [assistir ao vídeo]()
+
+## Instalação
+
+## Pré-requisitos
+
+Antes de começar, certifique-se de ter:
+
+- Python 3.10 ou superior
+- Git
+
+Após isso, clone o repositório, acesse a pasta do projeto e siga as instruções
+abaixo.
+
+### 1) Instale as dependências do sistema
+
+```bash
+sudo apt update
+sudo apt install python3 python3-venv python3-tk
+```
+
+### 2) Crie e ative o ambiente virtual
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+### 3) Instale as dependências do projeto
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+## Execução
+
+Na raiz do projeto, ative o ambiente virtual:
+
+```bash
+source .venv/bin/activate
+```
+
+Em seguida, execute:
+
+```bash
+python src/main.py
+```
+
+## Uso
