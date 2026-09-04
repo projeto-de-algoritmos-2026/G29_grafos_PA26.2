@@ -1,13 +1,29 @@
+import json
+
 class Grafo:
     def __init__(self):
         self.locais = {}
         self.adjacencia = {}
 
     def carregar_de_json(self, caminho_arquivo):
-        """Carrega locais e conexoes a partir de um arquivo mapa.json."""
-        # TODO: ler o JSON, criar os locais com adicionar_local() e as
-        # conexoes com adicionar_conexao().
-        raise NotImplementedError
+        with open(caminho_arquivo, encoding="utf-8") as arquivo:
+            dados = json.load(arquivo)
+
+        self.locais.clear()
+        self.adjacencia.clear()
+
+        for codigo, local in dados["locais"].items():
+            self.adicionar_local(codigo, local["nome"], local["tipo"])
+
+        for conexao in dados["conexoes"]:
+            self.adicionar_conexao(
+                conexao["origem"],
+                conexao["destino"],
+                conexao["distancia"],
+                conexao["tempo"],
+                conexao["dificuldade"],
+                conexao.get("bloqueado", False),
+            )
 
     def adicionar_local(self, codigo, nome, tipo):
         self.locais[codigo] = {
@@ -16,7 +32,9 @@ class Grafo:
         }
         self.adjacencia.setdefault(codigo, [])
 
-    def adicionar_conexao(self, origem, destino, distancia, tempo, dificuldade):
+    def adicionar_conexao(
+        self, origem, destino, distancia, tempo, dificuldade, bloqueado=False
+    ):
         if origem not in self.locais or destino not in self.locais:
             raise ValueError("Os dois locais devem existir no grafo.")
 
@@ -26,7 +44,7 @@ class Grafo:
                 "distancia": distancia,
                 "tempo": tempo,
                 "dificuldade": dificuldade,
-                "bloqueado": False,
+                "bloqueado": bloqueado,
             }
         )
 
@@ -36,7 +54,7 @@ class Grafo:
                 "distancia": distancia,
                 "tempo": tempo,
                 "dificuldade": dificuldade,
-                "bloqueado": False,
+                "bloqueado": bloqueado,
             }
         )
 
