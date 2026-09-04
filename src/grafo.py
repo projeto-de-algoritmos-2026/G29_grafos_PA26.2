@@ -4,6 +4,7 @@ class Grafo:
     def __init__(self):
         self.locais = {}
         self.adjacencia = {}
+        self.locais_bloqueados = set()
 
     def carregar_de_json(self, caminho_arquivo):
         with open(caminho_arquivo, encoding="utf-8") as arquivo:
@@ -11,6 +12,7 @@ class Grafo:
 
         self.locais.clear()
         self.adjacencia.clear()
+        self.locais_bloqueados.clear()
 
         for codigo, local in dados["locais"].items():
             self.adicionar_local(codigo, local["nome"], local["tipo"])
@@ -96,8 +98,37 @@ class Grafo:
         if not encontrou:
             raise ValueError(f"Nao existe conexao entre {origem} e {destino}.")
 
+    def bloquear_local(self, codigo):
+        """
+        Marca um local como interditado.
+
+        E o bloqueio que a interface oferece: um incendio interdita o
+        Corredor B inteiro, e nao apenas uma de suas passagens. O local
+        continua no mapa, mas nenhuma rota pode atravessa-lo.
+        """
+        if codigo not in self.locais:
+            raise ValueError(f"Local desconhecido: {codigo}.")
+
+        self.locais_bloqueados.add(codigo)
+
+    def desbloquear_local(self, codigo):
+        """Libera um local interditado."""
+        if codigo not in self.locais:
+            raise ValueError(f"Local desconhecido: {codigo}.")
+
+        self.locais_bloqueados.discard(codigo)
+
+    def local_bloqueado(self, codigo):
+        """Informa se um local esta interditado."""
+        return codigo in self.locais_bloqueados
+
     def vizinhos(self, local):
-        """Retorna as conexoes disponiveis (nao bloqueadas) de um local."""
+        """
+        Retorna as conexoes disponiveis a partir de um local.
+
+        Sao descartadas as passagens bloqueadas e as que levam a locais
+        interditados. O Dijkstra recebe apenas o que pode percorrer.
+        """
         if local not in self.locais:
             raise ValueError(f"Local desconhecido: {local}.")
 
@@ -105,10 +136,44 @@ class Grafo:
             conexao
             for conexao in self.adjacencia[local]
             if not conexao["bloqueado"]
+            and not self.local_bloqueado(conexao["destino"])
         ]
 
     def limpar_bloqueios(self):
-        """Libera todas as passagens do mapa."""
+        """Libera todas as passagens e todos os locais do mapa."""
         for conexoes in self.adjacencia.values():
             for conexao in conexoes:
                 conexao["bloqueado"] = False
+
+        self.locais_bloqueados.clear()
+
+    def codigo_por_nome(self, nome):
+        """
+        Converte o nome exibido na interface no codigo usado no grafo.
+
+        A interface trabalha com "Escada Norte"; o grafo, com "EN".
+        """
+        for codigo, local in self.locais.items():
+            if local["nome"] == nome:
+                return codigo
+
+        for codigo, local in self.locais.items():
+            if local["nome"].casefold() == nome.casefold():
+                return codigo
+
+        raise ValueError(f"Local desconhecido: {nome}.")
+
+    def nome_do_local(self, codigo):
+        """Converte o codigo do grafo no nome exibido na interface."""
+        if codigo not in self.locais:
+            raise ValueError(f"Local desconhecido: {codigo}.")
+
+        return self.locais[codigo]["nome"]
+
+    def saidas(self):
+        """Retorna os codigos de todas as saidas do predio."""
+        return [
+            codigo
+            for codigo, local in self.locais.items()
+            if local["tipo"] == "saida"
+        ]
