@@ -1,5 +1,7 @@
 import customtkinter as ctk
 
+from .mapa import criar_mapa
+
 ctk.set_appearance_mode("light")
 
 COR_FUNDO = "#EDF7FC"
@@ -87,23 +89,15 @@ class JanelaPrincipal:
         conteudo.columnconfigure(2, weight=3)
         conteudo.rowconfigure(0, weight=1)
 
-        self.painel_controles = self.criar_painel(
-            conteudo,
-            0,
-            "Controles",
-        )
-        self.painel_mapa = self.criar_painel(
-            conteudo,
-            1,
-            "Mapa do prédio",
-        )
+        self.painel_controles = self.criar_painel(conteudo, 0, "Controles")
+        self.painel_mapa = self.criar_painel(conteudo, 1, "Mapa do prédio")
         self.painel_resultado = self.criar_painel(
-            conteudo,
-            2,
-            "Resultado da rota",
+            conteudo, 2, "Resultado da rota"
         )
 
         self.criar_seletores()
+        criar_mapa(self.painel_mapa, COR_TEXTO)
+        self.criar_resultado()
 
     def criar_painel(self, pai, coluna, titulo):
         painel = ctk.CTkFrame(
@@ -151,6 +145,7 @@ class JanelaPrincipal:
         self.seletor_criterio = self.criar_seletor(area, "Critério", CRITERIOS)
 
         self.criar_bloqueios(area)
+        self.criar_botoes(area)
 
     def criar_seletor(self, pai, titulo, opcoes):
         ctk.CTkLabel(
@@ -240,6 +235,70 @@ class JanelaPrincipal:
             if selecionado.get()
         ]
 
+    def criar_botoes(self, pai):
+        ctk.CTkButton(
+            pai,
+            text="Calcular rota",
+            state="disabled",
+            fg_color="#AFC8D5",
+            corner_radius=0,
+        ).pack(fill="x", pady=(18, 8))
+
+        ctk.CTkButton(
+            pai,
+            text="Limpar seleção",
+            command=self.limpar_selecao,
+            fg_color="transparent",
+            hover_color=COR_SELETOR,
+            border_color=COR_BORDA,
+            border_width=1,
+            text_color=COR_TITULO,
+            corner_radius=0,
+        ).pack(fill="x")
+
+    def criar_resultado(self):
+        area = ctk.CTkFrame(self.painel_resultado, fg_color="transparent")
+        area.pack(fill="both", expand=True, padx=16, pady=18)
+
+        self.mensagem_resultado = ctk.CTkLabel(
+            area,
+            text="Nenhuma rota calculada.",
+            text_color=COR_TEXTO,
+            wraplength=200,
+        )
+        self.mensagem_resultado.pack(pady=(8, 24))
+
+        self.metricas = {}
+        for nome in ["Tempo", "Distância", "Dificuldade"]:
+            quadro = ctk.CTkFrame(area, fg_color=COR_SELETOR, corner_radius=0)
+            quadro.pack(fill="x", pady=5)
+
+            ctk.CTkLabel(
+                quadro,
+                text=nome,
+                text_color=COR_TEXTO,
+            ).pack(anchor="w", padx=12, pady=(8, 0))
+
+            valor = ctk.CTkLabel(
+                quadro,
+                text="—",
+                text_color=COR_TITULO,
+                font=ctk.CTkFont(size=16, weight="bold"),
+            )
+            valor.pack(anchor="w", padx=12, pady=(0, 8))
+            self.metricas[nome] = valor
+
+    def limpar_selecao(self):
+        self.seletor_origem.set(self.locais[0])
+        self.seletor_saida.set(self.saidas[0])
+        self.seletor_criterio.set(CRITERIOS[0])
+
+        for selecionado in self.bloqueios.values():
+            selecionado.set(False)
+
+        self.mensagem_resultado.configure(text="Nenhuma rota calculada.")
+        for valor in self.metricas.values():
+            valor.configure(text="—")
 
 def iniciar_interface(grafo):
     raiz = ctk.CTk()

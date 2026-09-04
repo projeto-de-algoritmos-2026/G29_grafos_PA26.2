@@ -63,7 +63,7 @@ arriscada para o prazo do trabalho.
 | `dados/mapa.json` | Locais, conexões e pesos do prédio fictício |
 | `src/grafo.py` | Lista de adjacência, carga de dados e bloqueios |
 | `src/dijkstra.py` | Fila de prioridade, cálculo de custo e reconstrução da rota |
-| `src/interface.py` | Seletores, bloqueios, botão e exibição de resultados |
+| `src/interface/` | Janela, controles, resultados e representação visual do mapa |
 | `src/main.py` | Inicialização e integração dos módulos |
 | `testes/` | Casos normais, bloqueios, critérios e ausência de rota |
 
@@ -78,6 +78,6 @@ arriscada para o prazo do trabalho.
 ## Status atual
 
 Etapa inicial (estrutura do repositório e definição do mapa). A lógica de
-`grafo.py`, `dijkstra.py` e `interface.py` ainda será implementada em commits
-seguintes — ver [COMO_EXECUTAR.md](COMO_EXECUTAR.md) para o estado do que já
-roda.
+`grafo.py`, `dijkstra.py` e `interface/` continuarão sendo implementados em
+commits seguintes — ver [COMO_EXECUTAR.md](COMO_EXECUTAR.md) para o estado do
+que já roda.
