@@ -60,15 +60,55 @@ class Grafo:
 
     def bloquear_conexao(self, origem, destino):
         """Marca uma conexao como indisponivel, sem remove-la do grafo."""
-        # TODO
-        raise NotImplementedError
+        self._definir_bloqueio(origem, destino, True)
 
     def desbloquear_conexao(self, origem, destino):
         """Remove o bloqueio de uma conexao."""
-        # TODO
-        raise NotImplementedError
+        self._definir_bloqueio(origem, destino, False)
+
+    def conexao_bloqueada(self, origem, destino):
+        """Informa se a passagem entre dois locais esta indisponivel."""
+        for conexao in self.adjacencia.get(origem, []):
+            if conexao["destino"] == destino:
+                return conexao["bloqueado"]
+
+        raise ValueError(f"Nao existe conexao entre {origem} e {destino}.")
+
+    def _definir_bloqueio(self, origem, destino, bloqueado):
+        """
+        Aplica o estado de bloqueio nos dois sentidos da conexao.
+
+        O grafo e nao direcionado, entao a mesma passagem aparece na lista
+        de adjacencia dos dois locais. Bloquear apenas um dos sentidos
+        deixaria o mapa inconsistente.
+        """
+        if origem not in self.locais or destino not in self.locais:
+            raise ValueError("Os dois locais devem existir no grafo.")
+
+        encontrou = False
+
+        for inicio, fim in ((origem, destino), (destino, origem)):
+            for conexao in self.adjacencia[inicio]:
+                if conexao["destino"] == fim:
+                    conexao["bloqueado"] = bloqueado
+                    encontrou = True
+
+        if not encontrou:
+            raise ValueError(f"Nao existe conexao entre {origem} e {destino}.")
 
     def vizinhos(self, local):
         """Retorna as conexoes disponiveis (nao bloqueadas) de um local."""
-        # TODO
-        raise NotImplementedError
+        if local not in self.locais:
+            raise ValueError(f"Local desconhecido: {local}.")
+
+        return [
+            conexao
+            for conexao in self.adjacencia[local]
+            if not conexao["bloqueado"]
+        ]
+
+    def limpar_bloqueios(self):
+        """Libera todas as passagens do mapa."""
+        for conexoes in self.adjacencia.values():
+            for conexao in conexoes:
+                conexao["bloqueado"] = False
