@@ -3,7 +3,7 @@ import customtkinter as ctk
 from dijkstra import calcular_melhor_saida, calcular_metricas
 from dijkstra import calcular_rota as encontrar_rota
 
-from .mapa import criar_mapa
+from .mapa_visual import criar_mapa
 
 ctk.set_appearance_mode("light")
 
@@ -78,7 +78,7 @@ class JanelaPrincipal:
         )
 
         self.criar_seletores()
-        criar_mapa(self.painel_mapa, self.grafo, COR_TEXTO)
+        self.mapa = criar_mapa(self.painel_mapa, self.grafo)
         self.criar_resultado()
 
     def criar_painel(self, pai, coluna, titulo):
@@ -318,11 +318,17 @@ class JanelaPrincipal:
         self.metricas["Dificuldade"].configure(
             text=f'{metricas["dificuldade_maxima"]}/5'
         )
+        self.mapa.atualizar(
+            caminho,
+            self.grafo.locais_bloqueados,
+            criterio,
+        )
 
     def exibir_erro(self, mensagem):
         self.mensagem_resultado.configure(text=mensagem, text_color=COR_ERRO)
         for valor in self.metricas.values():
             valor.configure(text="—")
+        self.mapa.atualizar(bloqueios=self.grafo.locais_bloqueados)
 
     @staticmethod
     def formatar_tempo(segundos):
@@ -342,6 +348,7 @@ class JanelaPrincipal:
             selecionado.set(False)
 
         self.grafo.limpar_bloqueios()
+        self.mapa.atualizar()
         self.mensagem_resultado.configure(
             text="Nenhuma rota calculada.",
             text_color=COR_TEXTO,
