@@ -12,11 +12,35 @@ import heapq
 
 INFINITO = float("inf")
 
+# O algoritmo e o mesmo nos quatro casos: muda apenas a funcao que
+# devolve o peso da aresta.
+CRITERIOS = ("tempo", "distancia", "dificuldade", "seguro")
+
+# Modo "evacuacao segura": cada ponto de dificuldade custa o equivalente
+# a 12 segundos de caminhada. O planejamento sugeria 0,2 minuto por
+# ponto; como o mapa registra o tempo em segundos, 0,2 min = 12 s. Assim
+# um trecho cansativo deixa de ser escolhido so por ser alguns segundos
+# mais rapido.
+FATOR_SEGURANCA = 12
+
+
+def peso_da_conexao(conexao, criterio):
+    """
+    Devolve o custo de atravessar uma conexao segundo o criterio.
+
+    "tempo" usa segundos, "distancia" usa metros e "dificuldade" usa a
+    escala de esforco de 1 a 5. "seguro" combina tempo e dificuldade.
+    """
+    if criterio == "seguro":
+        return conexao["tempo"] + conexao["dificuldade"] * FATOR_SEGURANCA
+
+    return conexao[criterio]
+
 
 def calcular_rota(grafo, origem, destino, criterio="tempo"):
     """
     Calcula a rota de menor custo entre origem e destino segundo o
-    criterio informado ("tempo", "distancia" ou "dificuldade").
+    criterio informado ("tempo", "distancia", "dificuldade" ou "seguro").
 
     Retorna uma tupla (caminho, custo_total), onde caminho e a lista de
     locais do trajeto, ou (None, None) caso nao exista rota disponivel
@@ -24,6 +48,7 @@ def calcular_rota(grafo, origem, destino, criterio="tempo"):
     """
     _validar_local(grafo, origem)
     _validar_local(grafo, destino)
+    _validar_criterio(criterio)
 
     if grafo.local_bloqueado(origem) or grafo.local_bloqueado(destino):
         return None, None
@@ -76,7 +101,7 @@ def _executar_dijkstra(grafo, origem, criterio, destino=None):
 
         for conexao in grafo.vizinhos(atual):
             vizinho = conexao["destino"]
-            novo_custo = custo_atual + conexao[criterio]
+            novo_custo = custo_atual + peso_da_conexao(conexao, criterio)
 
             if novo_custo < distancias[vizinho]:
                 distancias[vizinho] = novo_custo
@@ -104,3 +129,12 @@ def _validar_local(grafo, codigo):
     """Garante que o local existe no mapa antes de iniciar a busca."""
     if codigo not in grafo.locais:
         raise ValueError(f"Local desconhecido: {codigo}.")
+
+
+def _validar_criterio(criterio):
+    """Garante que o criterio de busca e um dos previstos."""
+    if criterio not in CRITERIOS:
+        validos = ", ".join(CRITERIOS)
+        raise ValueError(
+            f"Criterio desconhecido: {criterio}. Use um destes: {validos}."
+        )
