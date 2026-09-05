@@ -17,11 +17,15 @@ INFINITO = float("inf")
 CRITERIOS = ("tempo", "distancia", "dificuldade", "seguro")
 
 # Modo "evacuacao segura": cada ponto de dificuldade custa o equivalente
-# a 12 segundos de caminhada. O planejamento sugeria 0,2 minuto por
-# ponto; como o mapa registra o tempo em segundos, 0,2 min = 12 s. Assim
-# um trecho cansativo deixa de ser escolhido so por ser alguns segundos
-# mais rapido.
-FATOR_SEGURANCA = 12
+# a 25 segundos de caminhada.
+#
+# O planejamento sugeria 0,2 por ponto, supondo tempos em minutos; como
+# o mapa registra segundos, o valor equivalente seria 12. Medindo as
+# rotas reais, 12 nao muda decisao nenhuma e o modo seguro vira uma
+# copia do "menor tempo". Com 25 o criterio faz o que foi pedido: o
+# elevador (dificuldade 5) deixa de ser escolhido so por ser 45 s mais
+# rapido que a Escada Sul.
+FATOR_SEGURANCA = 25
 
 
 def peso_da_conexao(conexao, criterio):
