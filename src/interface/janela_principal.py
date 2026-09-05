@@ -1,5 +1,8 @@
 import customtkinter as ctk
 
+from dijkstra import calcular_melhor_saida, calcular_metricas
+from dijkstra import calcular_rota as encontrar_rota
+
 from .mapa import criar_mapa
 
 ctk.set_appearance_mode("light")
@@ -11,44 +14,23 @@ COR_TITULO = "#245B78"
 COR_TEXTO = "#526D7A"
 COR_BORDA = "#C5DDE9"
 COR_SELETOR = "#E7F2F8"
+COR_ERRO = "#B42318"
 
-LOCAIS = [
-    "Selecione um local",
-    "Sala 101",
-    "Sala 102",
-    "Sala 103",
-    "Sala 201",
-    "Sala 202",
-    "Sala 203",
-    "Corredor A",
-    "Corredor B",
-    "Corredor Central",
-    "Escada Norte",
-    "Escada Sul",
-    "Elevador",
-    "Hall do Térreo",
-    "Porta Principal",
-    "Porta Lateral",
-]
-SAIDAS = ["Saída mais próxima", "Saída Principal", "Saída de Emergência"]
-CRITERIOS = ["Menor tempo", "Menor distância", "Menor dificuldade"]
+CRITERIOS = {
+    "Menor tempo": "tempo",
+    "Menor distância": "distancia",
+    "Menor dificuldade": "dificuldade",
+    "Rota mais segura": "seguro",
+}
 TIPOS_BLOQUEAVEIS = {"corredor", "escada", "elevador", "saida"}
-BLOQUEIOS = [
-    "Corredor A",
-    "Corredor B",
-    "Corredor Central",
-    "Escada Norte",
-    "Escada Sul",
-    "Elevador",
-    "Saída Principal",
-    "Saída de Emergência",
-]
+
 
 class JanelaPrincipal:
     def __init__(self, raiz, grafo):
         self.raiz = raiz
         self.grafo = grafo
         self.bloqueios = {}
+        self.codigos_por_nome = {}
         self.locais, self.saidas, self.locais_bloqueaveis = self.obter_opcoes()
 
         self.raiz.title("Sistema de Evacuação de Emergência")
@@ -96,7 +78,7 @@ class JanelaPrincipal:
         )
 
         self.criar_seletores()
-        criar_mapa(self.painel_mapa, COR_TEXTO)
+        criar_mapa(self.painel_mapa, self.grafo, COR_TEXTO)
         self.criar_resultado()
 
     def criar_painel(self, pai, coluna, titulo):
@@ -142,7 +124,9 @@ class JanelaPrincipal:
             area, "Local de origem", self.locais
         )
         self.seletor_saida = self.criar_seletor(area, "Saída", self.saidas)
-        self.seletor_criterio = self.criar_seletor(area, "Critério", CRITERIOS)
+        self.seletor_criterio = self.criar_seletor(
+            area, "Critério", list(CRITERIOS)
+        )
 
         self.criar_bloqueios(area)
         self.criar_botoes(area)
@@ -205,18 +189,14 @@ class JanelaPrincipal:
             ).pack(anchor="w", pady=5)
 
     def obter_opcoes(self):
-        locais_do_grafo = getattr(self.grafo, "locais", {})
-
-        if not locais_do_grafo:
-            return LOCAIS, SAIDAS, BLOQUEIOS
-
         locais = ["Selecione um local"]
         saidas = ["Saída mais próxima"]
         bloqueios = []
 
-        for dados in locais_do_grafo.values():
+        for codigo, dados in self.grafo.locais.items():
             nome = dados["nome"]
             tipo = dados["tipo"]
+            self.codigos_por_nome[nome] = codigo
 
             if tipo == "saida":
                 saidas.append(nome)
@@ -230,19 +210,21 @@ class JanelaPrincipal:
 
     def obter_bloqueios_selecionados(self):
         return [
-            local
+            self.codigos_por_nome[local]
             for local, selecionado in self.bloqueios.items()
             if selecionado.get()
         ]
 
     def criar_botoes(self, pai):
-        ctk.CTkButton(
+        self.botao_calcular = ctk.CTkButton(
             pai,
             text="Calcular rota",
-            state="disabled",
-            fg_color="#AFC8D5",
+            command=self.calcular,
+            fg_color=COR_TITULO,
+            hover_color="#1D4A61",
             corner_radius=0,
-        ).pack(fill="x", pady=(18, 8))
+        )
+        self.botao_calcular.pack(fill="x", pady=(18, 8))
 
         ctk.CTkButton(
             pai,
@@ -288,17 +270,85 @@ class JanelaPrincipal:
             valor.pack(anchor="w", padx=12, pady=(0, 8))
             self.metricas[nome] = valor
 
+    def calcular(self):
+        nome_origem = self.seletor_origem.get()
+
+        if nome_origem == self.locais[0]:
+            self.exibir_erro("Selecione um local de origem.")
+            return
+
+        origem = self.codigos_por_nome[nome_origem]
+        criterio = CRITERIOS[self.seletor_criterio.get()]
+
+        self.grafo.limpar_bloqueios()
+        for codigo in self.obter_bloqueios_selecionados():
+            self.grafo.bloquear_local(codigo)
+
+        try:
+            if self.seletor_saida.get() == self.saidas[0]:
+                caminho, _, _ = calcular_melhor_saida(
+                    self.grafo, origem, criterio
+                )
+            else:
+                destino = self.codigos_por_nome[self.seletor_saida.get()]
+                caminho, _ = encontrar_rota(
+                    self.grafo, origem, destino, criterio
+                )
+        except ValueError as erro:
+            self.exibir_erro(str(erro))
+            return
+
+        if caminho is None:
+            self.exibir_erro("Não existe uma rota disponível com os bloqueios selecionados.")
+            return
+
+        metricas = calcular_metricas(self.grafo, caminho)
+        nomes = [self.grafo.nome_do_local(codigo) for codigo in caminho]
+
+        self.mensagem_resultado.configure(
+            text=" → ".join(nomes),
+            text_color=COR_TITULO,
+        )
+        self.metricas["Tempo"].configure(
+            text=self.formatar_tempo(metricas["tempo"])
+        )
+        self.metricas["Distância"].configure(
+            text=f'{metricas["distancia"]} m'
+        )
+        self.metricas["Dificuldade"].configure(
+            text=f'{metricas["dificuldade_maxima"]}/5'
+        )
+
+    def exibir_erro(self, mensagem):
+        self.mensagem_resultado.configure(text=mensagem, text_color=COR_ERRO)
+        for valor in self.metricas.values():
+            valor.configure(text="—")
+
+    @staticmethod
+    def formatar_tempo(segundos):
+        minutos, segundos = divmod(segundos, 60)
+
+        if minutos:
+            return f"{minutos} min {segundos} s"
+
+        return f"{segundos} s"
+
     def limpar_selecao(self):
         self.seletor_origem.set(self.locais[0])
         self.seletor_saida.set(self.saidas[0])
-        self.seletor_criterio.set(CRITERIOS[0])
+        self.seletor_criterio.set(next(iter(CRITERIOS)))
 
         for selecionado in self.bloqueios.values():
             selecionado.set(False)
 
-        self.mensagem_resultado.configure(text="Nenhuma rota calculada.")
+        self.grafo.limpar_bloqueios()
+        self.mensagem_resultado.configure(
+            text="Nenhuma rota calculada.",
+            text_color=COR_TEXTO,
+        )
         for valor in self.metricas.values():
             valor.configure(text="—")
+
 
 def iniciar_interface(grafo):
     raiz = ctk.CTk()
