@@ -54,7 +54,7 @@ def calcular_rota(grafo, origem, destino, criterio="tempo"):
         return None, None
 
     distancias, anteriores = _executar_dijkstra(
-        grafo, origem, criterio, destino
+        grafo, origem, criterio, {destino}
     )
 
     if distancias[destino] == INFINITO:
@@ -63,6 +63,48 @@ def calcular_rota(grafo, origem, destino, criterio="tempo"):
     caminho = _reconstruir_caminho(anteriores, destino)
 
     return caminho, distancias[destino]
+
+
+def calcular_melhor_saida(grafo, origem, criterio="tempo"):
+    """
+    Encontra a saida mais barata a partir da origem, sem que o usuario
+    precise escolher qual delas usar.
+
+    Nao e preciso rodar o Dijkstra uma vez para cada saida: uma unica
+    busca calcula o custo ate todos os locais alcancaveis. Como a fila
+    de prioridade sempre devolve o local mais barato, a primeira saida
+    retirada da fila ja e a melhor, e a busca pode parar ali.
+
+    Retorna (caminho, custo_total, saida) ou (None, None, None) quando
+    nenhuma saida esta disponivel.
+    """
+    _validar_local(grafo, origem)
+    _validar_criterio(criterio)
+
+    saidas = [
+        codigo
+        for codigo in grafo.saidas()
+        if not grafo.local_bloqueado(codigo)
+    ]
+
+    if not saidas or grafo.local_bloqueado(origem):
+        return None, None, None
+
+    distancias, anteriores = _executar_dijkstra(
+        grafo, origem, criterio, set(saidas)
+    )
+
+    alcancaveis = [
+        codigo for codigo in saidas if distancias[codigo] < INFINITO
+    ]
+
+    if not alcancaveis:
+        return None, None, None
+
+    melhor = min(alcancaveis, key=lambda codigo: distancias[codigo])
+    caminho = _reconstruir_caminho(anteriores, melhor)
+
+    return caminho, distancias[melhor], melhor
 
 
 def calcular_metricas(grafo, caminho):
@@ -108,7 +150,7 @@ def _buscar_conexao(grafo, origem, destino):
     raise ValueError(f"Nao existe conexao entre {origem} e {destino}.")
 
 
-def _executar_dijkstra(grafo, origem, criterio, destino=None):
+def _executar_dijkstra(grafo, origem, criterio, destinos=None):
     """
     Percorre o grafo a partir da origem acumulando o menor custo conhecido.
 
@@ -139,7 +181,7 @@ def _executar_dijkstra(grafo, origem, criterio, destino=None):
 
         visitados.add(atual)
 
-        if atual == destino:
+        if destinos and atual in destinos:
             break
 
         for conexao in grafo.vizinhos(atual):
