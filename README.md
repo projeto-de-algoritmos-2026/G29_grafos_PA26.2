@@ -32,7 +32,10 @@ prioridade **heap**. A busca ignora conexões bloqueadas e pode priorizar:
 
 - **Tempo:** medido em segundos;
 - **Distância:** medida em metros;
-- **Dificuldade:** representada por uma escala de 1 a 5.
+- **Dificuldade:** representada por uma escala de 1 a 5;
+- **Evacuação segura:** combina os dois anteriores com o custo
+  `tempo + dificuldade × 25`, para que um trecho de risco não seja
+  escolhido só por economizar alguns segundos.
 
 ### Mapa
 
@@ -41,6 +44,33 @@ do grafo, enquanto as passagens são as arestas com os pesos utilizados pelo
 algoritmo.
 
 ### Complexidade
+
+A busca usa uma **lista de adjacência**: cada local guarda apenas as
+passagens que existem. Com `V` locais e `E` passagens, o mapa ocupa
+`O(V + E)` — bem menos que uma matriz `V × V`, que seria quase toda
+vazia neste prédio.
+
+A **fila de prioridade** é o que dá a complexidade final. Ela devolve
+sempre o local de menor custo conhecido ainda não visitado; quando um
+local sai da fila, seu custo já é definitivo, porque qualquer outro
+caminho até ele passaria por um local mais caro e todos os pesos são
+positivos. É por isso que o algoritmo nunca precisa revisitar decisões.
+
+Não usamos *decrease-key*: quando um custo melhora, o local é inserido
+de novo na fila e as entradas antigas são descartadas na retirada, pelo
+conjunto de visitados. A fila chega a ter `O(E)` entradas, mas cada
+inserção e cada retirada continua custando `O(log V)`.
+
+| Operação | Complexidade |
+| -- | -- |
+| Carregar o mapa | `O(V + E)` |
+| Bloquear ou liberar um local | `O(1)` |
+| Bloquear ou liberar uma passagem | `O(grau do local)` |
+| Listar os vizinhos livres | `O(grau do local)` |
+| **Dijkstra com fila de prioridade** | **`O((V + E) log V)`** |
+| Reconstruir a rota | `O(V)` |
+| Somar as métricas da rota | `O(V + E)` |
+
 
 ## Screenshots
 
@@ -90,6 +120,20 @@ Em seguida, execute:
 
 ```bash
 python src/main.py
+```
+
+### Testes
+
+```bash
+python -m unittest discover testes
+```
+
+### Demonstração no terminal
+
+Roda os cenários de emergência sem abrir a interface:
+
+```bash
+python src/demo_terminal.py
 ```
 
 ## Uso
