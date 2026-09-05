@@ -65,6 +65,49 @@ def calcular_rota(grafo, origem, destino, criterio="tempo"):
     return caminho, distancias[destino]
 
 
+def calcular_metricas(grafo, caminho):
+    """
+    Soma os pesos de cada trecho da rota escolhida.
+
+    A busca otimiza um unico criterio, mas a interface mostra os tres
+    indicadores. Percorrer o caminho depois da busca garante que os
+    numeros exibidos descrevem a rota realmente encontrada.
+
+    'dificuldade_total' e o valor minimizado pelo criterio de esforco;
+    'dificuldade_maxima' e o pior trecho do percurso, na escala de 1 a 5
+    usada na tela.
+    """
+    metricas = {
+        "distancia": 0,
+        "tempo": 0,
+        "dificuldade_total": 0,
+        "dificuldade_maxima": 0,
+        "trechos": 0,
+    }
+
+    for atual, proximo in zip(caminho, caminho[1:]):
+        conexao = _buscar_conexao(grafo, atual, proximo)
+
+        metricas["distancia"] += conexao["distancia"]
+        metricas["tempo"] += conexao["tempo"]
+        metricas["dificuldade_total"] += conexao["dificuldade"]
+        metricas["dificuldade_maxima"] = max(
+            metricas["dificuldade_maxima"], conexao["dificuldade"]
+        )
+        metricas["trechos"] += 1
+
+    return metricas
+
+
+def _buscar_conexao(grafo, origem, destino):
+    """Recupera os pesos da passagem usada entre dois locais seguidos."""
+    for conexao in grafo.adjacencia.get(origem, []):
+        if conexao["destino"] == destino:
+            return conexao
+
+    raise ValueError(f"Nao existe conexao entre {origem} e {destino}.")
+
+
 def _executar_dijkstra(grafo, origem, criterio, destino=None):
     """
     Percorre o grafo a partir da origem acumulando o menor custo conhecido.
