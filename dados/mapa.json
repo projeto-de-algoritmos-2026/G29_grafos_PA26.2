@@ -31,7 +31,7 @@
     { "origem": "CA", "destino": "EN", "distancia": 15, "tempo": 20, "dificuldade": 3, "bloqueado": false },
     { "origem": "CB", "destino": "ES", "distancia": 15, "tempo": 20, "dificuldade": 2, "bloqueado": false },
     { "origem": "CC", "destino": "EL", "distancia": 10, "tempo": 10, "dificuldade": 1, "bloqueado": false },
-    { "origem": "EN", "destino": "H1", "distancia": 25, "tempo": 35, "dificuldade": 4, "bloqueado": false },
+    { "origem": "EN", "destino": "H1", "distancia": 25, "tempo": 35, "dificuldade": 3, "bloqueado": false },
     { "origem": "ES", "destino": "H1", "distancia": 28, "tempo": 45, "dificuldade": 2, "bloqueado": false },
     { "origem": "EL", "destino": "H1", "distancia": 25, "tempo": 15, "dificuldade": 5, "bloqueado": false },
     { "origem": "EN", "destino": "ES", "distancia": 35, "tempo": 55, "dificuldade": 3, "bloqueado": false },

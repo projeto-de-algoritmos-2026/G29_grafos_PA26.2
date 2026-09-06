@@ -59,11 +59,12 @@ class TestCalcularRota(unittest.TestCase):
         self.assertEqual(custo, 8)
 
     def test_modo_seguro_evita_o_elevador(self):
-        caminho, _ = dijkstra.calcular_rota(
+        caminho, custo = dijkstra.calcular_rota(
             self.grafo, "S203", "SP", "seguro"
         )
 
-        self.assertEqual(caminho, ROTA_MAIS_FACIL)
+        self.assertEqual(caminho, ROTA_MAIS_CURTA)
+        self.assertEqual(custo, 316)
         self.assertNotIn("EL", caminho)
 
     def test_rota_para_o_proprio_local_nao_tem_custo(self):

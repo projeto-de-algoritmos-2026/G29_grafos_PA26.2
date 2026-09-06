@@ -107,7 +107,7 @@ class TestCriteriosNaInterface(unittest.TestCase):
         self.assertIn("Elevador", self.planejar("Menor tempo").rota)
         self.assertIn("Escada Norte", self.planejar("Menor distância").rota)
         self.assertIn("Escada Sul", self.planejar("Menor dificuldade").rota)
-        self.assertIn("Escada Sul", self.planejar("Evacuação segura").rota)
+        self.assertIn("Escada Norte", self.planejar("Evacuação segura").rota)
 
     def test_rotulo_da_tela_e_criterio_interno_dao_o_mesmo_caminho(self):
         self.assertEqual(
