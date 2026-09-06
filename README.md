@@ -71,10 +71,38 @@ inserção e cada retirada continua custando `O(log V)`.
 | Reconstruir a rota | `O(V)` |
 | Somar as métricas da rota | `O(V + E)` |
 
-
 ## Screenshots
 
-## Apresentação do trabalho: [assistir ao vídeo]()
+- **Interface principal**
+  ![Imagem 1](./assets/janela_principal.png)
+
+- **Rota de menor tempo:** O algoritmo encontra o percurso mais rápido.
+  - **Origem:** Sala 203
+  - **Saída:** Saída Principal
+  ![Imagem 2](./assets/menor_tempo.png)
+
+- **Rota de menor distância:** O caminho passa pela *escada norte* e reduz a distância total para 69 metros, mesmo não sendo a alternativa mais rápida.
+  - **Origem:** Sala 203
+  - **Saída:** Saída Principal
+  ![Imagem 3](./assets/menor_distancia.png)
+
+- **Rota de menor dificuldade:** O algoritmo evita o *elevador* e a *escada norte*, escolhendo um percurso mais longo pela *escada sul*, cuja dificuldade máxima é 2 de 5.
+  - **Origem:** Sala 203
+  - **Saída:** Saída Principal
+  ![Imagem 4](./assets/menor_dificuldade.png)
+
+- **Rota mais segura:** Combina o tempo com a dificuldade de cada trecho. O algoritmo evita o *elevador*, que possui dificuldade máxima, e escolhe a *escada norte*. O percurso leva 91 segundos, possui dificuldade máxima 3 de 5 e apresenta o menor custo combinado.
+  - **Origem:** Sala 203
+  - **Saída:** Saída Principal
+  ![Imagem 5](./assets/mais_segura.png)
+
+- **Rota com bloqueio:** Neste cenário, o *elevador* está indisponível. A rota de menor tempo originalmente passaria por ele, mas o algoritmo ignora o local bloqueado e recalcula o percurso pela *escada norte*, com tempo total de 91 segundos.
+  - **Origem:** Sala 203
+  - **Saída:** Saída Principal
+  - **Bloqueio:** Elevador
+  ![Imagem 6](./assets/com_bloqueio.png)
+
+## [Clique aqui para assistir à apresentação](#)
 
 ## Instalação
 
@@ -135,5 +163,3 @@ Roda os cenários de emergência sem abrir a interface:
 ```bash
 python src/demo_terminal.py
 ```
-
-## Uso
