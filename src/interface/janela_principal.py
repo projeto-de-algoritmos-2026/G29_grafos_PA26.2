@@ -318,11 +318,7 @@ class JanelaPrincipal:
         self.metricas["Dificuldade"].configure(
             text=f'{metricas["dificuldade_maxima"]}/5'
         )
-        self.mapa.atualizar(
-            caminho,
-            self.grafo.locais_bloqueados,
-            criterio,
-        )
+        self.mapa.atualizar(caminho, self.grafo.locais_bloqueados)
 
     def exibir_erro(self, mensagem):
         self.mensagem_resultado.configure(text=mensagem, text_color=COR_ERRO)
@@ -355,7 +351,6 @@ class JanelaPrincipal:
         )
         for valor in self.metricas.values():
             valor.configure(text="—")
-
 
 def iniciar_interface(grafo):
     raiz = ctk.CTk()

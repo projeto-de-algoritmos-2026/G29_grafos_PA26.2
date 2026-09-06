@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from dijkstra import peso_da_conexao
-
 COR_FUNDO = "#FFFFFF"
 COR_CONEXAO = "#B8CAD4"
 COR_VERTICE = "#DCEEF7"
@@ -35,7 +33,6 @@ class MapaVisual:
         self.grafo = grafo
         self.rota = []
         self.bloqueios = set()
-        self.criterio = None
 
         legenda = tk.Frame(painel, background=COR_FUNDO)
         legenda.pack(fill="x", padx=12, pady=(10, 0))
@@ -62,10 +59,9 @@ class MapaVisual:
         self.canvas.pack(fill="both", expand=True, padx=8, pady=8)
         self.canvas.bind("<Configure>", self.desenhar)
 
-    def atualizar(self, rota=None, bloqueios=None, criterio=None):
+    def atualizar(self, rota=None, bloqueios=None):
         self.rota = rota or []
         self.bloqueios = set(bloqueios or [])
-        self.criterio = criterio
         self.desenhar()
 
     def desenhar(self, _evento=None):
@@ -118,18 +114,6 @@ class MapaVisual:
                     width=largura_linha,
                     dash=tracejado,
                 )
-
-                if na_rota and self.criterio:
-                    x_origem, y_origem = pontos[origem]
-                    x_destino, y_destino = pontos[destino]
-
-                    self.canvas.create_text(
-                        (x_origem + x_destino) / 2,
-                        (y_origem + y_destino) / 2 - 10,
-                        text=self.formatar_peso(conexao),
-                        fill=COR_ROTA,
-                        font=("TkDefaultFont", 8, "bold"),
-                    )
 
         for codigo, dados in self.grafo.locais.items():
             x, y = pontos[codigo]
