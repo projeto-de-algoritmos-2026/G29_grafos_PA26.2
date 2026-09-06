@@ -106,7 +106,7 @@ inserção e cada retirada continua custando `O(log V)`.
 
 ## Instalação
 
-## Pré-requisitos
+### Pré-requisitos
 
 Antes de começar, certifique-se de ter:
 
