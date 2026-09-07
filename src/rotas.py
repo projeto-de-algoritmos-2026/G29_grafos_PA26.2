@@ -18,7 +18,6 @@ Uso na interface:
         bloqueios=["Corredor B"],
     )
 
-Responsabilidade: Pessoa 1 (algoritmos e dados).
 """
 
 from dataclasses import dataclass, field

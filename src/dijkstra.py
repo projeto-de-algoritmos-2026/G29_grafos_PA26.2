@@ -5,7 +5,6 @@ Implementa o algoritmo de Dijkstra com fila de prioridade (heapq) para
 encontrar o menor custo acumulado entre a origem e o destino. Como todos
 os custos sao positivos, o algoritmo e adequado para o problema.
 
-Responsabilidade: Pessoa 1 (algoritmos e dados).
 """
 
 import heapq

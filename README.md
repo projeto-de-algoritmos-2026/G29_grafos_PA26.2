@@ -102,7 +102,9 @@ inserção e cada retirada continua custando `O(log V)`.
   - **Bloqueio:** Elevador
   ![Imagem 6](./assets/com_bloqueio.png)
 
-## [Clique aqui para assistir à apresentação](#)
+## Apresentação
+
+<video src="https://github.com/projeto-de-algoritmos-2026/G29_grafos_PA26.2/raw/main/assets/apresentacao.mp4" controls width="100%"></video>
 
 ## Instalação
 
